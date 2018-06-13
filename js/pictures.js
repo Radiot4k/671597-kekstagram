@@ -1,3 +1,5 @@
+'use strict';
+
 var COMMENTS = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -49,27 +51,27 @@ for (var i = 1; i <= 25; i++) {
 
 var createFragment = function (template, val) {
   var element = template.cloneNode(true);
-  if(element.querySelector('.picture__img')) {
+  if (element.querySelector('.picture__img')) {
     element.querySelector('.picture__img').src = val.url;
   }
-  if(element.querySelector('.picture__stat--likes')) {
+  if (element.querySelector('.picture__stat--likes')) {
     element.querySelector('.picture__stat--likes').textContent = val.likes;
   }
-  if(element.querySelector('.picture__stat--comments')) {
+  if (element.querySelector('.picture__stat--comments')) {
     element.querySelector('.picture__stat--comments').textContent = val.comments.length;
   }
-  if(element.querySelector('.social__picture')) {
+  if (element.querySelector('.social__picture')) {
     element.querySelector('.social__picture').src = 'img/avatar-' + getRandomNumber(1, 6) + '.svg';
   }
-  if(element.querySelector('.social__text')) {
+  if (element.querySelector('.social__text')) {
     element.querySelector('.social__text').textContent = val;
   }
 
   return element;
-}
+};
 
 var fragment = document.createDocumentFragment();
-for (var i = 0; i < pictures.length; i++) {
+for (i = 0; i < pictures.length; i++) {
   fragment.appendChild(createFragment(pictureTemplate, pictures[i]));
 }
 picturesList.appendChild(fragment);
@@ -90,7 +92,7 @@ while (commentsList.firstChild) {
 }
 
 fragment = document.createDocumentFragment();
-for (var i = 0; i < pictures[0].comments.length; i++) {
+for (i = 0; i < pictures[0].comments.length; i++) {
   fragment.appendChild(createFragment(commentTemplate, pictures[0].comments[i]));
 }
 commentsList.appendChild(fragment);
