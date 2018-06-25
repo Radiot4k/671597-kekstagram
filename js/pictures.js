@@ -161,7 +161,7 @@ var clearAllEffects = function () {
 };
 
 var resizePicture = function (elem, currentSize) {
-  var newSize = parseInt(currentSize.replace('%', ''));
+  var newSize = parseInt(currentSize.replace('%', ''), 8);
   if (elem.classList.contains('resize__control--plus')) {
     newSize += 25;
     if (newSize > 100) {
@@ -173,7 +173,7 @@ var resizePicture = function (elem, currentSize) {
       newSize = 25;
     }
   }
-  imagePreview.style.transform = 'scale(' + newSize /100 + ')';
+  imagePreview.style.transform = 'scale(' + newSize / 100 + ')';
 
   return newSize + '%';
 };
@@ -186,8 +186,6 @@ var addEffect = function (effect) {
 var imagePreview = uploadOverlay.querySelector('.img-upload__preview');
 var imagePreviewImg = imagePreview.querySelector('img');
 var effectsList = uploadOverlay.querySelector('.effects__list');
-var scaleLine = uploadOverlay.querySelector('.scale__line');
-var scalePin = scaleLine.querySelector('.scale__pin');
 
 effectsList.addEventListener('click', function (evt) {
   if (evt.target.nodeName === 'INPUT') {
@@ -201,12 +199,6 @@ for (i = 0; i < resizeControls.length; i++) {
   if (!resizeControls[i].classList.contains('resize__control--value')) {
     resizeControls[i].addEventListener('click', function (evt) {
       resizeControls[1].value = resizePicture(evt.target, resizeControls[1].value);
-
     });
   }
 }
-
-
-scalePin.addEventListener('mouseup', function (evt) {
-  console.log(scaleLine.clientX);
-});
