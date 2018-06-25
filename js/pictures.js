@@ -18,10 +18,44 @@ var DESCRIPTIONS = [
   'Вот это тачка!'
 ];
 
+var ESC_KEYCODE = 27;
+
 var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture__link');
-var picturesList = document.querySelector('.pictures');
+var picturesContainer = document.querySelector('.pictures');
 var commentTemplate = document.querySelector('#picture').content.querySelector('.social__comment');
 var commentsList = document.querySelector('.social__comments');
+
+var openBigPicture = function () {
+  pictureBig.classList.remove('hidden');
+  document.addEventListener('keydown', onBigPictureEscPress);
+};
+
+var closeBigPicture = function () {
+  pictureBig.classList.add('hidden');
+  document.removeEventListener('keydown', onBigPictureEscPress);
+};
+
+var openUploadOverlay = function () {
+  uploadOverlay.classList.remove('hidden');
+  document.addEventListener('keydown', onUploadOverlayEscPress);
+};
+
+var closeUploadOverlay = function () {
+  uploadOverlay.classList.add('hidden');
+  document.removeEventListener('keydown', onUploadOverlayEscPress);
+};
+
+var onBigPictureEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeBigPicture();
+  }
+};
+
+var onUploadOverlayEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeUploadOverlay();
+  }
+};
 
 var getRandomNumber = function (min, max) {
   var number = Math.floor(Math.random() * (max + 1 - min) + min);
@@ -74,12 +108,11 @@ var fragment = document.createDocumentFragment();
 for (i = 0; i < pictures.length; i++) {
   fragment.appendChild(createFragment(pictureTemplate, pictures[i]));
 }
-picturesList.appendChild(fragment);
+picturesContainer.appendChild(fragment);
 
 var pictureBig = document.querySelector('.big-picture');
-pictureBig.classList.remove('hidden');
 
-var pictureBigElements = pictureBig.querySelectorAll('.big-picture__img img, .likes-count, .comments-count, .social__caption, .social__comment-count, .social__loadmore');
+var pictureBigElements = pictureBig.querySelectorAll('.big-picture__img img, .likes-count, .comments-count, .social__caption, .social__comment-count, .social__loadmore, #picture-cancel');
 pictureBigElements[0].src = pictures[0].url;
 pictureBigElements[2].textContent = pictures[0].likes;
 pictureBigElements[4].textContent = pictures[0].comments.length;
@@ -96,3 +129,84 @@ for (i = 0; i < pictures[0].comments.length; i++) {
   fragment.appendChild(createFragment(commentTemplate, pictures[0].comments[i]));
 }
 commentsList.appendChild(fragment);
+
+var picturesList = picturesContainer.querySelectorAll('.picture__link');
+
+for (i = 0; i < picturesList.length; i++) {
+  picturesList[i].addEventListener('click', function () {
+    openBigPicture();
+  });
+}
+
+pictureBigElements[6].addEventListener('click', function () {
+  closeBigPicture();
+});
+
+var uploadFile = document.querySelector('#upload-file');
+var uploadOverlay = document.querySelector('.img-upload__overlay');
+var cancelUploadOverlay = uploadOverlay.querySelector('#upload-cancel');
+
+uploadFile.addEventListener('change', function () {
+  openUploadOverlay();
+});
+
+cancelUploadOverlay.addEventListener('click', function () {
+  closeUploadOverlay();
+  clearAllEffects();
+});
+
+var clearAllEffects = function () {
+  imagePreviewImg.classList.remove(imagePreviewImg.classList.item(0));
+  imagePreview.style.transform = 'scale(1)';
+};
+
+var resizePicture = function (elem, currentSize) {
+  var newSize = parseInt(currentSize.replace('%', ''));
+  if (elem.classList.contains('resize__control--plus')) {
+    newSize += 25;
+    if (newSize > 100) {
+      newSize = 100;
+    }
+  } else {
+    newSize -= 25;
+    if (newSize < 25) {
+      newSize = 25;
+    }
+  }
+  imagePreview.style.transform = 'scale(' + newSize /100 + ')';
+
+  return newSize + '%';
+};
+
+var addEffect = function (effect) {
+  imagePreviewImg.classList.remove(imagePreviewImg.classList.item(0));
+  imagePreviewImg.classList.add('effects__preview--' + effect);
+};
+
+var imagePreview = uploadOverlay.querySelector('.img-upload__preview');
+var imagePreviewImg = imagePreview.querySelector('img');
+var effectsList = uploadOverlay.querySelector('.effects__list');
+var scaleLine = uploadOverlay.querySelector('.scale__line');
+var scalePin = scaleLine.querySelector('.scale__pin');
+
+effectsList.addEventListener('click', function (evt) {
+  if (evt.target.nodeName === 'INPUT') {
+    addEffect(evt.target.value);
+  }
+});
+
+var resizeControls = uploadOverlay.querySelectorAll('.resize__control');
+
+for (i = 0; i < resizeControls.length; i++) {
+  if (!resizeControls[i].classList.contains('resize__control--value')) {
+    resizeControls[i].addEventListener('click', function (evt) {
+      resizeControls[1].value = resizePicture(evt.target, resizeControls[1].value);
+
+    });
+  }
+}
+
+
+scalePin.addEventListener('mouseup', function (evt) {
+  console.log(scaleLine.clientX);
+});
