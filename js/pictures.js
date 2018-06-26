@@ -161,7 +161,7 @@ var clearAllEffects = function () {
 };
 
 var resizePicture = function (elem, currentSize) {
-  var newSize = parseInt(currentSize.replace('%', ''), 8);
+  var newSize = parseInt(currentSize.replace('%', ''), 10);
   if (elem.classList.contains('resize__control--plus')) {
     newSize += 25;
     if (newSize > 100) {
