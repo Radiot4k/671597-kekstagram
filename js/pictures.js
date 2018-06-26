@@ -219,13 +219,11 @@ for (i = 0; i < resizeControls.length; i++) {
 var uploadForm = document.querySelector('#upload-select-image');
 var textDescription = uploadForm.querySelector('.text__description');
 var hashtags = uploadForm.querySelector('.text__hashtags');
-var uploadSubmit = uploadForm.querySelector('#upload-submit');
 
 hashtags.addEventListener('input', function () {
   var hashtagsArray = hashtags.value.split(' ');
 
   for (i = 0; i < hashtagsArray.length; i++) {
-    curElem = hashtagsArray[i];
     if (hashtagsArray[i].charAt(0) !== '#') {
       hashtags.setCustomValidity('Хэш-тег должен начинается с символа # (решётка)');
     } else if (hashtagsArray[i] === '#') {
