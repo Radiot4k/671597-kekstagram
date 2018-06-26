@@ -25,38 +25,6 @@ var picturesContainer = document.querySelector('.pictures');
 var commentTemplate = document.querySelector('#picture').content.querySelector('.social__comment');
 var commentsList = document.querySelector('.social__comments');
 
-var openBigPicture = function () {
-  pictureBig.classList.remove('hidden');
-  document.addEventListener('keydown', onBigPictureEscPress);
-};
-
-var closeBigPicture = function () {
-  pictureBig.classList.add('hidden');
-  document.removeEventListener('keydown', onBigPictureEscPress);
-};
-
-var openUploadOverlay = function () {
-  uploadOverlay.classList.remove('hidden');
-  document.addEventListener('keydown', onUploadOverlayEscPress);
-};
-
-var closeUploadOverlay = function () {
-  uploadOverlay.classList.add('hidden');
-  document.removeEventListener('keydown', onUploadOverlayEscPress);
-};
-
-var onBigPictureEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    closeBigPicture();
-  }
-};
-
-var onUploadOverlayEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    closeUploadOverlay();
-  }
-};
-
 var getRandomNumber = function (min, max) {
   var number = Math.floor(Math.random() * (max + 1 - min) + min);
 
@@ -130,7 +98,25 @@ for (i = 0; i < pictures[0].comments.length; i++) {
 }
 commentsList.appendChild(fragment);
 
+// --------------------------------------------------------------------------
+
 var picturesList = picturesContainer.querySelectorAll('.picture__link');
+
+var openBigPicture = function () {
+  pictureBig.classList.remove('hidden');
+  document.addEventListener('keydown', onBigPictureEscPress);
+};
+
+var closeBigPicture = function () {
+  pictureBig.classList.add('hidden');
+  document.removeEventListener('keydown', onBigPictureEscPress);
+};
+
+var onBigPictureEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeBigPicture();
+  }
+};
 
 for (i = 0; i < picturesList.length; i++) {
   picturesList[i].addEventListener('click', function () {
@@ -142,11 +128,34 @@ pictureBigElements[6].addEventListener('click', function () {
   closeBigPicture();
 });
 
+// ---------------------------------------------------------------------
+
 var uploadFile = document.querySelector('#upload-file');
 var uploadOverlay = document.querySelector('.img-upload__overlay');
 var cancelUploadOverlay = uploadOverlay.querySelector('#upload-cancel');
 
-uploadFile.addEventListener('change', function () {
+var openUploadOverlay = function () {
+  uploadOverlay.classList.remove('hidden');
+  document.addEventListener('keydown', onUploadOverlayEscPress);
+};
+
+var closeUploadOverlay = function () {
+  uploadOverlay.classList.add('hidden');
+  document.removeEventListener('keydown', onUploadOverlayEscPress);
+};
+
+var onUploadOverlayEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeUploadOverlay();
+  }
+};
+
+var clearAllEffects = function () {
+  imagePreviewImg.classList.remove(imagePreviewImg.classList.item(0));
+  imagePreview.style.transform = 'scale(1)';
+};
+
+uploadFile.addEventListener('change', function (evt) {
   openUploadOverlay();
 });
 
@@ -155,12 +164,28 @@ cancelUploadOverlay.addEventListener('click', function () {
   clearAllEffects();
 });
 
-var clearAllEffects = function () {
+// --------------------------------------------------------------------------
+
+var imagePreview = uploadOverlay.querySelector('.img-upload__preview');
+var imagePreviewImg = imagePreview.querySelector('img');
+var effectsList = uploadOverlay.querySelector('.effects__list');
+
+var addEffect = function (effect) {
   imagePreviewImg.classList.remove(imagePreviewImg.classList.item(0));
-  imagePreview.style.transform = 'scale(1)';
+  imagePreviewImg.classList.add('effects__preview--' + effect);
 };
 
-var resizePicture = function (elem, currentSize) {
+effectsList.addEventListener('click', function (evt) {
+  if (evt.target.nodeName === 'INPUT') {
+    addEffect(evt.target.value);
+  }
+});
+
+// -------------------------------------------------------------------------
+
+var resizeControls = uploadOverlay.querySelectorAll('.resize__control');
+
+var getNewSize = function (elem, currentSize) {
   var newSize = parseInt(currentSize.replace('%', ''), 10);
   if (elem.classList.contains('resize__control--plus')) {
     newSize += 25;
@@ -173,32 +198,18 @@ var resizePicture = function (elem, currentSize) {
       newSize = 25;
     }
   }
-  imagePreview.style.transform = 'scale(' + newSize / 100 + ')';
-
   return newSize + '%';
 };
 
-var addEffect = function (effect) {
-  imagePreviewImg.classList.remove(imagePreviewImg.classList.item(0));
-  imagePreviewImg.classList.add('effects__preview--' + effect);
+var resizePicture = function (size) {
+  imagePreview.style.transform = 'scale(' + size.replace('%', '') / 100 + ')';
 };
-
-var imagePreview = uploadOverlay.querySelector('.img-upload__preview');
-var imagePreviewImg = imagePreview.querySelector('img');
-var effectsList = uploadOverlay.querySelector('.effects__list');
-
-effectsList.addEventListener('click', function (evt) {
-  if (evt.target.nodeName === 'INPUT') {
-    addEffect(evt.target.value);
-  }
-});
-
-var resizeControls = uploadOverlay.querySelectorAll('.resize__control');
 
 for (i = 0; i < resizeControls.length; i++) {
   if (!resizeControls[i].classList.contains('resize__control--value')) {
     resizeControls[i].addEventListener('click', function (evt) {
-      resizeControls[1].value = resizePicture(evt.target, resizeControls[1].value);
+      resizeControls[1].value = getNewSize(evt.currentTarget, resizeControls[1].value);
+      resizePicture(resizeControls[1].value);
     });
   }
 }
