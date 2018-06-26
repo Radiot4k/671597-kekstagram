@@ -227,11 +227,11 @@ hashtags.addEventListener('input', function () {
     if (hashtagsArray[i].charAt(0) !== '#') {
       hashtags.setCustomValidity('Хэш-тег должен начинается с символа # (решётка)');
     } else if (hashtagsArray[i] === '#') {
-        hashtags.setCustomValidity('Хеш-тег не может состоять только из одной решётки');
+      hashtags.setCustomValidity('Хеш-тег не может состоять только из одной решётки');
     } else if (hashtagsArray[i].length > 20) {
-        hashtags.setCustomValidity('Максимальная длина одного хэш-тега - 20 символов, включая решётку');
+      hashtags.setCustomValidity('Максимальная длина одного хэш-тега - 20 символов, включая решётку');
     } else if (hashtagsArray.length > 5) {
-        hashtags.setCustomValidity('Максимальное количество хэш-тегов - 5');
+      hashtags.setCustomValidity('Максимальное количество хэш-тегов - 5');
     } else {
       hashtags.setCustomValidity('');
     }
