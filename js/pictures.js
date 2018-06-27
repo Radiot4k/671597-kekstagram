@@ -18,8 +18,10 @@ var DESCRIPTIONS = [
   'Вот это тачка!'
 ];
 
+var ESC_KEYCODE = 27;
+
 var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture__link');
-var picturesList = document.querySelector('.pictures');
+var picturesContainer = document.querySelector('.pictures');
 var commentTemplate = document.querySelector('#picture').content.querySelector('.social__comment');
 var commentsList = document.querySelector('.social__comments');
 
@@ -74,12 +76,11 @@ var fragment = document.createDocumentFragment();
 for (i = 0; i < pictures.length; i++) {
   fragment.appendChild(createFragment(pictureTemplate, pictures[i]));
 }
-picturesList.appendChild(fragment);
+picturesContainer.appendChild(fragment);
 
 var pictureBig = document.querySelector('.big-picture');
-pictureBig.classList.remove('hidden');
 
-var pictureBigElements = pictureBig.querySelectorAll('.big-picture__img img, .likes-count, .comments-count, .social__caption, .social__comment-count, .social__loadmore');
+var pictureBigElements = pictureBig.querySelectorAll('.big-picture__img img, .likes-count, .comments-count, .social__caption, .social__comment-count, .social__loadmore, #picture-cancel');
 pictureBigElements[0].src = pictures[0].url;
 pictureBigElements[2].textContent = pictures[0].likes;
 pictureBigElements[4].textContent = pictures[0].comments.length;
@@ -96,3 +97,153 @@ for (i = 0; i < pictures[0].comments.length; i++) {
   fragment.appendChild(createFragment(commentTemplate, pictures[0].comments[i]));
 }
 commentsList.appendChild(fragment);
+
+// --------------------------------------------------------------------------
+
+var picturesList = picturesContainer.querySelectorAll('.picture__link');
+
+var openBigPicture = function () {
+  pictureBig.classList.remove('hidden');
+  document.addEventListener('keydown', onBigPictureEscPress);
+};
+
+var closeBigPicture = function () {
+  pictureBig.classList.add('hidden');
+  document.removeEventListener('keydown', onBigPictureEscPress);
+};
+
+var onBigPictureEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeBigPicture();
+  }
+};
+
+for (i = 0; i < picturesList.length; i++) {
+  picturesList[i].addEventListener('click', function () {
+    openBigPicture();
+  });
+}
+
+pictureBigElements[6].addEventListener('click', function () {
+  closeBigPicture();
+});
+
+// ---------------------------------------------------------------------
+
+var uploadFile = document.querySelector('#upload-file');
+var uploadOverlay = document.querySelector('.img-upload__overlay');
+var cancelUploadOverlay = uploadOverlay.querySelector('#upload-cancel');
+
+var openUploadOverlay = function () {
+  uploadOverlay.classList.remove('hidden');
+  document.addEventListener('keydown', onUploadOverlayEscPress);
+};
+
+var closeUploadOverlay = function () {
+  uploadOverlay.classList.add('hidden');
+  document.removeEventListener('keydown', onUploadOverlayEscPress);
+};
+
+var onUploadOverlayEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeUploadOverlay();
+  }
+};
+
+var clearAllEffects = function () {
+  imagePreviewImg.classList.remove(imagePreviewImg.classList.item(0));
+  imagePreview.style.transform = 'scale(1)';
+};
+
+uploadFile.addEventListener('change', function () {
+  openUploadOverlay();
+});
+
+cancelUploadOverlay.addEventListener('click', function () {
+  closeUploadOverlay();
+  clearAllEffects();
+});
+
+// --------------------------------------------------------------------------
+
+var imagePreview = uploadOverlay.querySelector('.img-upload__preview');
+var imagePreviewImg = imagePreview.querySelector('img');
+var effectsList = uploadOverlay.querySelector('.effects__list');
+
+var addEffect = function (effect) {
+  imagePreviewImg.classList.remove(imagePreviewImg.classList.item(0));
+  imagePreviewImg.classList.add('effects__preview--' + effect);
+};
+
+effectsList.addEventListener('click', function (evt) {
+  if (evt.target.nodeName === 'INPUT') {
+    addEffect(evt.target.value);
+  }
+});
+
+// -------------------------------------------------------------------------
+
+var resizeControls = uploadOverlay.querySelectorAll('.resize__control');
+
+var getNewSize = function (elem, currentSize) {
+  var newSize = parseInt(currentSize.replace('%', ''), 10);
+  if (elem.classList.contains('resize__control--plus')) {
+    newSize += 25;
+    if (newSize > 100) {
+      newSize = 100;
+    }
+  } else {
+    newSize -= 25;
+    if (newSize < 25) {
+      newSize = 25;
+    }
+  }
+  return newSize + '%';
+};
+
+var resizePicture = function (size) {
+  imagePreview.style.transform = 'scale(' + size.replace('%', '') / 100 + ')';
+};
+
+for (i = 0; i < resizeControls.length; i++) {
+  if (!resizeControls[i].classList.contains('resize__control--value')) {
+    resizeControls[i].addEventListener('click', function (evt) {
+      resizeControls[1].value = getNewSize(evt.currentTarget, resizeControls[1].value);
+      resizePicture(resizeControls[1].value);
+    });
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+var uploadForm = document.querySelector('#upload-select-image');
+var textDescription = uploadForm.querySelector('.text__description');
+var hashtags = uploadForm.querySelector('.text__hashtags');
+
+hashtags.addEventListener('input', function () {
+  var hashtagsArray = hashtags.value.split(' ');
+
+  for (i = 0; i < hashtagsArray.length; i++) {
+    if (hashtagsArray[i].charAt(0) !== '#') {
+      hashtags.setCustomValidity('Хэш-тег должен начинается с символа # (решётка)');
+    } else if (hashtagsArray[i] === '#') {
+      hashtags.setCustomValidity('Хеш-тег не может состоять только из одной решётки');
+    } else if (hashtagsArray[i].length > 20) {
+      hashtags.setCustomValidity('Максимальная длина одного хэш-тега - 20 символов, включая решётку');
+    } else if (hashtagsArray.length > 5) {
+      hashtags.setCustomValidity('Максимальное количество хэш-тегов - 5');
+    } else {
+      hashtags.setCustomValidity('');
+    }
+  }
+});
+
+// Как принудительно заставить выводить сообщение?
+textDescription.addEventListener('input', function (evt) {
+  var target = evt.target;
+  if (target.value.length > 140) {
+    target.setCustomValidity('Длина комментария не может составлять больше 140 символов');
+  } else {
+    target.setCustomValidity('');
+  }
+});
