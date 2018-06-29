@@ -220,24 +220,6 @@ var uploadForm = document.querySelector('#upload-select-image');
 var textDescription = uploadForm.querySelector('.text__description');
 var hashtags = uploadForm.querySelector('.text__hashtags');
 
-hashtags.addEventListener('input', function () {
-  var hashtagsArray = hashtags.value.split(' ');
-
-  for (i = 0; i < hashtagsArray.length; i++) {
-    if (hashtagsArray[i].charAt(0) !== '#') {
-      hashtags.setCustomValidity('Хэш-тег должен начинается с символа # (решётка)');
-    } else if (hashtagsArray[i] === '#') {
-      hashtags.setCustomValidity('Хеш-тег не может состоять только из одной решётки');
-    } else if (hashtagsArray[i].length > 20) {
-      hashtags.setCustomValidity('Максимальная длина одного хэш-тега - 20 символов, включая решётку');
-    } else if (hashtagsArray.length > 5) {
-      hashtags.setCustomValidity('Максимальное количество хэш-тегов - 5');
-    } else {
-      hashtags.setCustomValidity('');
-    }
-  }
-});
-
 // Как принудительно заставить выводить сообщение?
 textDescription.addEventListener('input', function (evt) {
   var target = evt.target;
@@ -245,5 +227,42 @@ textDescription.addEventListener('input', function (evt) {
     target.setCustomValidity('Длина комментария не может составлять больше 140 символов');
   } else {
     target.setCustomValidity('');
+  }
+});
+
+var getHashtagsError = function () {
+  var hashtagsArray = hashtags.value.split(' ');
+  if (hashtagsArray.length > 5) {
+    return 'Максимальное количество хэш-тегов - 5';
+  }
+  for (i = 0; i < hashtagsArray.length; i++) {
+    if (hashtagsArray[i].charAt(0) !== '#') {
+      return 'Хэш-тег должен начинается с символа # (решётка)';
+    } else if (hashtagsArray[i] === '#') {
+      return 'Хеш-тег не может состоять только из одной решётки';
+    } else if (hashtagsArray[i].length > 20) {
+      return 'Максимальная длина одного хэш-тега - 20 символов, включая решётку';
+    } else {
+      for (var j = i + 1; j < hashtagsArray.length; j++) {
+        if (i === hashtagsArray.length - 1) {
+          break;
+        } else if (hashtagsArray[i].toLowerCase() === hashtagsArray[j].toLowerCase()) {
+          return 'Два одинаковых хэш-тега не допустимо';
+        }
+      }
+    }
+  }
+  return '';
+};
+
+uploadForm.addEventListener('submit', function (evt) {
+  if (getHashtagsError()) {
+    evt.preventDefault();
+    hashtags.setCustomValidity(getHashtagsError());
+    hashtags.addEventListener('input', function () {
+      hashtags.setCustomValidity(getHashtagsError());
+    });
+  } else {
+    hashtags.setCustomValidity('');
   }
 });
