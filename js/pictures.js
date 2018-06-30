@@ -132,7 +132,6 @@ pictureBigElements[6].addEventListener('click', function () {
 
 var uploadFile = document.querySelector('#upload-file');
 var uploadOverlay = document.querySelector('.img-upload__overlay');
-var cancelUploadOverlay = uploadOverlay.querySelector('#upload-cancel');
 
 var openUploadOverlay = function () {
   uploadOverlay.classList.remove('hidden');
@@ -147,6 +146,7 @@ var closeUploadOverlay = function () {
 var onUploadOverlayEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     closeUploadOverlay();
+    clearAllEffects();
   }
 };
 
@@ -159,11 +159,6 @@ var clearAllEffects = function () {
 
 uploadFile.addEventListener('change', function () {
   openUploadOverlay();
-});
-
-cancelUploadOverlay.addEventListener('click', function () {
-  //closeUploadOverlay();
-  clearAllEffects();
 });
 
 // --------------------------------------------------------------------------
@@ -246,7 +241,6 @@ textDescription.addEventListener('input', function (evt) {
 
 var getHashtagsError = function () {
   var hashtagsArray = hashtags.value.split(' ');
-  console.log(hashtagsArray);
   if (hashtagsArray.length > 5) {
     return 'Максимальное количество хэш-тегов - 5';
   } else if (hashtagsArray[0]) {
@@ -286,6 +280,7 @@ uploadForm.addEventListener('submit', function (evt) {
 uploadForm.addEventListener('reset', function (evt) {
   evt.preventDefault();
   closeUploadOverlay();
+  clearAllEffects();
 });
 
 // -----------------------------------------------------------------
@@ -301,21 +296,21 @@ var setEffectLevel = function (effectLevel) {
     case 'effects__preview--chrome' :
       effect = effectLevel / 100;
       imagePreviewImg.style.filter = 'grayscale(' + effect + ')';
-      break
+      break;
     case 'effects__preview--sepia' :
       effect = effectLevel / 100;
       imagePreviewImg.style.filter = 'sepia(' + effect + ')';
-      break
+      break;
     case 'effects__preview--marvin' :
       effect = effectLevel;
       imagePreviewImg.style.filter = 'invert(' + effect + '%)';
-      break
+      break;
     case 'effects__preview--phobos' :
       effect = effectLevel * 3 / 100;
       imagePreviewImg.style.filter = 'blur(' + effect + 'px)';
-      break
+      break;
     case 'effects__preview--heat' :
-      effect = effectLevel *2 / 100 + 1;
+      effect = effectLevel * 2 / 100 + 1;
       imagePreviewImg.style.filter = 'brightness(' + effect + ')';
   }
 };
