@@ -154,6 +154,7 @@ var clearAllEffects = function () {
   imagePreviewImg.removeAttribute('class');
   imagePreviewImg.removeAttribute('style');
   imagePreview.removeAttribute('style');
+  resizeControls[1].value = '100%';
   uploadFile.value = '';
 };
 
