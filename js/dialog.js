@@ -4,6 +4,8 @@
 
   var uploadFile = window.formElements.form.querySelector('#upload-file');
   var uploadOverlay = window.formElements.form.querySelector('.img-upload__overlay');
+  var hashtags = window.formElements.hashtags;
+  var textarea = window.formElements.textarea;
 
   var openUploadOverlay = function () {
     uploadOverlay.classList.remove('hidden');
@@ -15,8 +17,29 @@
     document.removeEventListener('keydown', onUploadOverlayEscPress);
   };
 
+  var hashtagsOnFocus = false;
+  var textareaOnFocus = false;
+
+  hashtags.addEventListener('focus', function () {
+    hashtagsOnFocus = true;
+  });
+
+  hashtags.addEventListener('blur', function () {
+    hashtagsOnFocus = false;
+  });
+
+  textarea.addEventListener('focus', function () {
+    textareaOnFocus = true;
+  });
+
+  textarea.addEventListener('blur', function () {
+    textareaOnFocus = false;
+  });
+
   var onUploadOverlayEscPress = function (evt) {
-    window.util.isEscEvent(evt, closeUploadOverlay, clearAllEffects);
+    if (!hashtagsOnFocus && !textareaOnFocus) {
+      window.util.isEscEvent(evt, closeUploadOverlay, clearAllEffects);
+    }
   };
 
   var clearAllEffects = function () {
@@ -48,8 +71,6 @@
     imgUploadWrapper.appendChild(window.util.createFragment(errorTemplate, errorMessage));
     imgUploadWrapper.querySelector('.error').classList.remove('hidden');
   };
-
-  var hashtags = window.formElements.hashtags;
 
   hashtags.addEventListener('input', function () {
     hashtags.setCustomValidity(window.formValidation.getHashtagsError());
