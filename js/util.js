@@ -4,9 +4,12 @@ window.util = (function () {
   var ESC_KEYCODE = 27;
 
   return {
-    isEscEvent: function (evt, action) {
+    isEscEvent: function (evt, action1, action2) {
       if (evt.keyCode === ESC_KEYCODE) {
-        action();
+        action1();
+        if (action2) {
+          action2();
+        }
       }
     },
     pictures: [],

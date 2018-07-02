@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var ESC_KEYCODE = 27;
 
   var uploadFile = window.formElements.form.querySelector('#upload-file');
   var uploadOverlay = window.formElements.form.querySelector('.img-upload__overlay');
@@ -17,10 +16,7 @@
   };
 
   var onUploadOverlayEscPress = function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      closeUploadOverlay();
-      clearAllEffects();
-    }
+    window.util.isEscEvent(evt, closeUploadOverlay, clearAllEffects);
   };
 
   var clearAllEffects = function () {
