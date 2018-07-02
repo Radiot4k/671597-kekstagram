@@ -49,17 +49,15 @@
     imgUploadWrapper.querySelector('.error').classList.remove('hidden');
   };
 
+  var hashtags = window.formElements.hashtags;
+
+  hashtags.addEventListener('input', function () {
+    hashtags.setCustomValidity(window.formValidation.getHashtagsError());
+  });
+
   window.formElements.form.addEventListener('submit', function (evt) {
     evt.preventDefault();
-
-    var errorMessage = window.formValidation.getHashtagsError();
-
-    if (errorMessage) {
-      window.formValidation.customValidity(errorMessage);
-    } else {
-      window.formValidation.customValidity('');
-      window.backend.save(new FormData(window.formElements.form), onSuccess, onError);
-    }
+    window.backend.save(new FormData(window.formElements.form), onSuccess, onError);
   });
 
   window.formElements.form.addEventListener('reset', function (evt) {

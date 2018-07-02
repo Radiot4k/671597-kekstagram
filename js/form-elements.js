@@ -7,7 +7,9 @@ window.formElements = (function () {
     img: document.querySelector('.img-upload__preview img'),
     resizeControls: document.querySelectorAll('.resize__control'),
     scale: document.querySelector('.scale'),
-    effectsList: document.querySelector('.effects__list')
+    effectsList: document.querySelector('.effects__list'),
+    hashtags: document.querySelector('.text__hashtags'),
+    textarea: document.querySelector('.text__description')
   };
 })();
 
