@@ -6,6 +6,7 @@ window.bigPicture = (function () {
       var picturesList = document.querySelectorAll('.picture__link');
       var pictureBig = document.querySelector('.big-picture');
       var close = pictureBig.querySelector('#picture-cancel');
+      var body = document.querySelector('body');
 
       var renderBigPicture = function (numberOfPicture) {
         var DESCRIPTIONS = [
@@ -42,12 +43,14 @@ window.bigPicture = (function () {
       };
 
       var openBigPicture = function (numberOfPicture) {
+        body.classList.add('modal-open');
         renderBigPicture(numberOfPicture);
         pictureBig.classList.remove('hidden');
         document.addEventListener('keydown', onBigPictureEscPress);
       };
 
       var closeBigPicture = function () {
+        body.classList.remove('modal-open');
         pictureBig.classList.add('hidden');
         document.removeEventListener('keydown', onBigPictureEscPress);
       };
