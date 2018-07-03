@@ -11,7 +11,7 @@ window.backend = (function () {
       xhr.addEventListener('load', function () {
         if (xhr.status === 200) {
           onLoad(xhr.response);
-          window.bigPicture.clickListener();
+          window.bigPicture.clickListener(xhr.response);
         } else {
           onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
         }

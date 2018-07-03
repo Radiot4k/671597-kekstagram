@@ -16,5 +16,7 @@
     });
 
     picturesContainer.appendChild(fragment);
+
+    window.bigPicture.clickListener(pictures);
   };
 })();
