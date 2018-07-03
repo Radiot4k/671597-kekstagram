@@ -1,52 +1,74 @@
 'use strict';
 
-(function () {
-  var picturesList = document.querySelectorAll('.picture__link');
-  var pictureBig = document.querySelector('.big-picture');
-  var pictureBigElements = pictureBig.querySelectorAll('.big-picture__img img, .likes-count, .comments-count, .social__caption, .social__comment-count, .social__loadmore, #picture-cancel');
-  var commentTemplate = document.querySelector('#picture').content.querySelector('.social__comment');
-  var commentsList = document.querySelector('.social__comments');
+window.bigPicture = (function () {
+  return {
+    clickListener: function () {
+      var picturesList = document.querySelectorAll('.picture__link');
+      var pictureBig = document.querySelector('.big-picture');
+      var close = pictureBig.querySelector('#picture-cancel');
 
-  pictureBigElements[0].src = window.util.pictures[0].url;
-  pictureBigElements[2].textContent = window.util.pictures[0].likes;
-  pictureBigElements[4].textContent = window.util.pictures[0].comments.length;
-  pictureBigElements[1].textContent = window.util.pictures[0].description;
-  pictureBigElements[3].classList.add('visually-hidden');
-  pictureBigElements[5].classList.add('visually-hidden');
+      var renderBigPicture = function (numberOfPicture) {
+        var DESCRIPTIONS = [
+          'Тестим новую камеру!',
+          'Затусили с друзьями на море',
+          'Как же круто тут кормят',
+          'Отдыхаем...',
+          'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......',
+          'Вот это тачка!'
+        ];
 
-  while (commentsList.firstChild) {
-    commentsList.removeChild(commentsList.firstChild);
-  }
+        var pictureBigElements = pictureBig.querySelectorAll('.big-picture__img img, .likes-count, .comments-count, .social__caption, .social__comment-count, .social__loadmore');
+        var commentTemplate = document.querySelector('#picture').content.querySelector('.social__comment');
+        var commentsList = document.querySelector('.social__comments');
 
-  var fragment = document.createDocumentFragment();
+        pictureBigElements[0].src = window.util.loadData[numberOfPicture].url;
+        pictureBigElements[1].textContent = DESCRIPTIONS[window.util.getRandomNumber(0, 5)];
+        pictureBigElements[2].textContent = window.util.loadData[numberOfPicture].likes;
+        pictureBigElements[3].classList.add('visually-hidden');
+        pictureBigElements[4].textContent = window.util.loadData[numberOfPicture].comments.length;
+        pictureBigElements[5].classList.add('visually-hidden');
 
-  for (i = 0; i < window.util.pictures[0].comments.length; i++) {
-    fragment.appendChild(window.util.createFragment(commentTemplate, window.util.pictures[0].comments[i]));
-  }
+        while (commentsList.firstChild) {
+          commentsList.removeChild(commentsList.firstChild);
+        }
 
-  commentsList.appendChild(fragment);
+        var fragment = document.createDocumentFragment();
 
-  var openBigPicture = function () {
-    pictureBig.classList.remove('hidden');
-    document.addEventListener('keydown', onBigPictureEscPress);
+        for (var i = 0; i < window.util.loadData[numberOfPicture].comments.length; i++) {
+          fragment.appendChild(window.util.createFragment(commentTemplate, window.util.loadData[numberOfPicture].comments[i]));
+        }
+
+        commentsList.appendChild(fragment);
+      };
+
+      var openBigPicture = function (numberOfPicture) {
+        renderBigPicture(numberOfPicture);
+        pictureBig.classList.remove('hidden');
+        document.addEventListener('keydown', onBigPictureEscPress);
+      };
+
+      var closeBigPicture = function () {
+        pictureBig.classList.add('hidden');
+        document.removeEventListener('keydown', onBigPictureEscPress);
+      };
+
+      var onBigPictureEscPress = function (evt) {
+        window.util.isEscEvent(evt, closeBigPicture);
+      };
+
+      var addClickListener = function (numberOfPicture) {
+        picturesList[numberOfPicture].addEventListener('click', function () {
+          openBigPicture(numberOfPicture);
+        });
+      };
+
+      for (var i = 0; i < picturesList.length; i++) {
+        addClickListener(i);
+      }
+
+      close.addEventListener('click', function () {
+        closeBigPicture();
+      });
+    }
   };
-
-  var closeBigPicture = function () {
-    pictureBig.classList.add('hidden');
-    document.removeEventListener('keydown', onBigPictureEscPress);
-  };
-
-  var onBigPictureEscPress = function (evt) {
-    window.util.isEscEvent(evt, closeBigPicture);
-  };
-
-  for (var i = 0; i < picturesList.length; i++) {
-    picturesList[i].addEventListener('click', function () {
-      openBigPicture();
-    });
-  }
-
-  pictureBigElements[6].addEventListener('click', function () {
-    closeBigPicture();
-  });
 })();

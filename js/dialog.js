@@ -4,6 +4,8 @@
 
   var uploadFile = window.formElements.form.querySelector('#upload-file');
   var uploadOverlay = window.formElements.form.querySelector('.img-upload__overlay');
+  var hashtags = window.formElements.hashtags;
+  var textarea = window.formElements.textarea;
 
   var openUploadOverlay = function () {
     uploadOverlay.classList.remove('hidden');
@@ -15,8 +17,29 @@
     document.removeEventListener('keydown', onUploadOverlayEscPress);
   };
 
+  var hashtagsOnFocus = false;
+  var textareaOnFocus = false;
+
+  hashtags.addEventListener('focus', function () {
+    hashtagsOnFocus = true;
+  });
+
+  hashtags.addEventListener('blur', function () {
+    hashtagsOnFocus = false;
+  });
+
+  textarea.addEventListener('focus', function () {
+    textareaOnFocus = true;
+  });
+
+  textarea.addEventListener('blur', function () {
+    textareaOnFocus = false;
+  });
+
   var onUploadOverlayEscPress = function (evt) {
-    window.util.isEscEvent(evt, closeUploadOverlay, clearAllEffects);
+    if (!hashtagsOnFocus && !textareaOnFocus) {
+      window.util.isEscEvent(evt, closeUploadOverlay, clearAllEffects);
+    }
   };
 
   var clearAllEffects = function () {
@@ -36,14 +59,26 @@
     openUploadOverlay();
   });
 
+  var onSuccess = function () {
+    closeUploadOverlay();
+    clearAllEffects();
+  };
+
+  var onError = function (errorMessage) {
+    var errorTemplate = document.querySelector('#picture').content.querySelector('.error');
+    var imgUploadWrapper = uploadOverlay.querySelector('.img-upload__wrapper');
+
+    imgUploadWrapper.appendChild(window.util.createFragment(errorTemplate, errorMessage));
+    imgUploadWrapper.querySelector('.error').classList.remove('hidden');
+  };
+
+  hashtags.addEventListener('input', function () {
+    hashtags.setCustomValidity(window.formValidation.getHashtagsError());
+  });
+
   window.formElements.form.addEventListener('submit', function (evt) {
-    var errorMessage = window.formValidation.getHashtagsError();
-    if (errorMessage) {
-      evt.preventDefault();
-      window.formValidation.customValidity(errorMessage);
-    } else {
-      window.formValidation.customValidity('');
-    }
+    evt.preventDefault();
+    window.backend.save(new FormData(window.formElements.form), onSuccess, onError);
   });
 
   window.formElements.form.addEventListener('reset', function (evt) {
@@ -51,4 +86,6 @@
     closeUploadOverlay();
     clearAllEffects();
   });
+
+
 })();

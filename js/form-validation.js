@@ -1,7 +1,7 @@
 'use strict';
 
 window.formValidation = (function () {
-  var hashtags = window.formElements.form.querySelector('.text__hashtags');
+  var hashtags = window.formElements.hashtags;
   return {
     getHashtagsError: function () {
       var hashtagsArray = hashtags.value.split(' ');
@@ -27,18 +27,6 @@ window.formValidation = (function () {
         }
       }
       return '';
-    },
-    customValidity: function (errorMessage) {
-      var onHashtagsInput = function () {
-        hashtags.setCustomValidity(window.formValidation.getHashtagsError());
-      };
-      if (errorMessage) {
-        hashtags.setCustomValidity(errorMessage);
-        hashtags.addEventListener('input', onHashtagsInput);
-      } else {
-        hashtags.setCustomValidity('');
-        hashtags.removeEventListener('input', onHashtagsInput);
-      }
     }
   };
 })();
