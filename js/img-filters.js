@@ -4,7 +4,7 @@
   var filtersForm = document.querySelector('.img-filters__form');
 
   var updatePictures = window.debounce(function (filter) {
-    var data = window.util.loadData.slice();
+    var data = window.loadData.slice();
     switch (filter) {
       case 'filter-popular':
         window.renderPictures(data);

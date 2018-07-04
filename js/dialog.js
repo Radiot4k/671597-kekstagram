@@ -6,6 +6,7 @@
   var uploadOverlay = window.formElements.form.querySelector('.img-upload__overlay');
   var hashtags = window.formElements.hashtags;
   var textarea = window.formElements.textarea;
+  var uploadErrorMessage;
 
   var openUploadOverlay = function () {
     uploadOverlay.classList.remove('hidden');
@@ -53,6 +54,11 @@
     for (var i = 0; i < effectsRadioList.length; i++) {
       effectsRadioList[i].checked = false;
     }
+    window.formElements.hashtags.value = '';
+    window.formElements.textarea.value = '';
+    if (uploadErrorMessage) {
+      uploadErrorMessage.remove();
+    }
   };
 
   uploadFile.addEventListener('change', function () {
@@ -69,7 +75,16 @@
     var imgUploadWrapper = uploadOverlay.querySelector('.img-upload__wrapper');
 
     imgUploadWrapper.appendChild(window.util.createFragment(errorTemplate, errorMessage));
-    imgUploadWrapper.querySelector('.error').classList.remove('hidden');
+    uploadErrorMessage = imgUploadWrapper.querySelector('.error');
+    uploadErrorMessage.classList.remove('hidden');
+    var errorLinks = uploadErrorMessage.querySelectorAll('.error__links');
+    for (var i = 0; i < errorLinks.length; i++) {
+      errorLinks[i].addEventListener('click', function (evt) {
+        evt.preventDefault();
+        closeUploadOverlay();
+        clearAllEffects();
+      });
+    }
   };
 
   hashtags.addEventListener('input', function () {

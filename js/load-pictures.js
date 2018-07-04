@@ -4,8 +4,8 @@
   var filters = document.querySelector('.img-filters');
 
   var onSuccess = function (pictures) {
-    window.util.loadData = pictures;
-    window.renderPictures(window.util.loadData);
+    window.loadData = pictures;
+    window.renderPictures(window.loadData);
     filters.classList.remove('img-filters--inactive');
   };
 

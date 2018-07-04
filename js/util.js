@@ -12,7 +12,6 @@ window.util = (function () {
         }
       }
     },
-    loadData: [],
     createFragment: function (template, val) {
 
       var element = template.cloneNode(true);
@@ -31,6 +30,9 @@ window.util = (function () {
       }
       if (element.querySelector('.social__text')) {
         element.querySelector('.social__text').textContent = val;
+      }
+      if (element.querySelector('.error')) {
+        element.querySelector('.error').textContent += ' ' + val;
       }
 
       return element;
