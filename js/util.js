@@ -12,7 +12,7 @@ window.util = (function () {
         }
       }
     },
-    loadData: 0,
+    loadData: [],
     createFragment: function (template, val) {
 
       var element = template.cloneNode(true);

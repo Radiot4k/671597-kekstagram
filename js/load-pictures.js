@@ -1,19 +1,12 @@
 'use strict';
 
 (function () {
-  var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture__link');
-  var picturesContainer = document.querySelector('.pictures');
+  var filters = document.querySelector('.img-filters');
 
   var onSuccess = function (pictures) {
-    var fragment = document.createDocumentFragment();
-
     window.util.loadData = pictures;
-
-    for (var i = 0; i < pictures.length; i++) {
-      fragment.appendChild(window.util.createFragment(pictureTemplate, pictures[i]));
-    }
-
-    picturesContainer.appendChild(fragment);
+    window.renderPictures(window.util.loadData);
+    filters.classList.remove('img-filters--inactive');
   };
 
   var onError = function (errorMessage) {

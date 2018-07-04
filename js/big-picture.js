@@ -2,10 +2,11 @@
 
 window.bigPicture = (function () {
   return {
-    clickListener: function () {
+    clickListener: function (data) {
       var picturesList = document.querySelectorAll('.picture__link');
       var pictureBig = document.querySelector('.big-picture');
       var close = pictureBig.querySelector('#picture-cancel');
+      var body = document.querySelector('body');
 
       var renderBigPicture = function (numberOfPicture) {
         var DESCRIPTIONS = [
@@ -21,11 +22,11 @@ window.bigPicture = (function () {
         var commentTemplate = document.querySelector('#picture').content.querySelector('.social__comment');
         var commentsList = document.querySelector('.social__comments');
 
-        pictureBigElements[0].src = window.util.loadData[numberOfPicture].url;
+        pictureBigElements[0].src = data[numberOfPicture].url;
         pictureBigElements[1].textContent = DESCRIPTIONS[window.util.getRandomNumber(0, 5)];
-        pictureBigElements[2].textContent = window.util.loadData[numberOfPicture].likes;
+        pictureBigElements[2].textContent = data[numberOfPicture].likes;
         pictureBigElements[3].classList.add('visually-hidden');
-        pictureBigElements[4].textContent = window.util.loadData[numberOfPicture].comments.length;
+        pictureBigElements[4].textContent = data[numberOfPicture].comments.length;
         pictureBigElements[5].classList.add('visually-hidden');
 
         while (commentsList.firstChild) {
@@ -34,20 +35,22 @@ window.bigPicture = (function () {
 
         var fragment = document.createDocumentFragment();
 
-        for (var i = 0; i < window.util.loadData[numberOfPicture].comments.length; i++) {
-          fragment.appendChild(window.util.createFragment(commentTemplate, window.util.loadData[numberOfPicture].comments[i]));
+        for (var i = 0; i < data[numberOfPicture].comments.length; i++) {
+          fragment.appendChild(window.util.createFragment(commentTemplate, data[numberOfPicture].comments[i]));
         }
 
         commentsList.appendChild(fragment);
       };
 
       var openBigPicture = function (numberOfPicture) {
+        body.classList.add('modal-open');
         renderBigPicture(numberOfPicture);
         pictureBig.classList.remove('hidden');
         document.addEventListener('keydown', onBigPictureEscPress);
       };
 
       var closeBigPicture = function () {
+        body.classList.remove('modal-open');
         pictureBig.classList.add('hidden');
         document.removeEventListener('keydown', onBigPictureEscPress);
       };
@@ -62,7 +65,7 @@ window.bigPicture = (function () {
         });
       };
 
-      for (var i = 0; i < picturesList.length; i++) {
+      for (var i = 0; i < data.length; i++) {
         addClickListener(i);
       }
 
