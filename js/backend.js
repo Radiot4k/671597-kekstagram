@@ -4,8 +4,8 @@ window.backend = (function () {
   var SUCCESS_CODE = 200;
 
   var Url = {
-    load: 'https://js.dump.academy/kekstagram/data',
-    save: 'https://js.dump.academy/kekstagram'
+    LOAD: 'https://js.dump.academy/kekstagram/data',
+    SAVE: 'https://js.dump.academy/kekstagram'
   };
 
   var getRequest = function (url, method, onLoad, onError, data) {
@@ -38,10 +38,10 @@ window.backend = (function () {
 
   return {
     load: function (onLoad, onError) {
-      getRequest(Url.load, 'GET', onLoad, onError);
+      getRequest(Url.LOAD, 'GET', onLoad, onError);
     },
     save: function (data, onLoad, onError) {
-      getRequest(Url.save, 'POST', onLoad, onError, data);
+      getRequest(Url.SAVE, 'POST', onLoad, onError, data);
     }
   };
 })();
