@@ -101,11 +101,7 @@
 
       startX = moveEvt.clientX;
       effectValue = (scalePin.offsetLeft - shift) * 100 / scaleLine.offsetWidth;
-      if (effectValue < 0) {
-        effectValue = 0;
-      } else if (effectValue > 100) {
-        effectValue = 100;
-      }
+      effectValue = effectValue < 0 ? 0 : effectValue > 100 ? 100 : effectValue;
 
       scaleValue.value = Math.round(effectValue).toString();
       scalePin.style.left = effectValue + '%';

@@ -31,8 +31,10 @@ window.util = (function () {
       if (element.querySelector('.social__text')) {
         element.querySelector('.social__text').textContent = val;
       }
-      if (element.querySelector('.error')) {
-        element.querySelector('.error').textContent += ' ' + val;
+      if (element.classList.contains('error')) {
+        var errorMessage = document.createElement('div');
+        errorMessage.textContent = val;
+        element.insertAdjacentElement('afterbegin', errorMessage);
       }
 
       return element;
